@@ -1,0 +1,178 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    App\Products\Repository\DBALProductRepository:
+        arguments:
+            $connection: '@doctrine.dbal.default_connection'
+            
+    App\Products\QueryHandler\GetProductCollectionHandler:
+        arguments:
+            $repository: '@App\Products\Repository\DBALProductRepository'
+
+    App\Products\Controller\GetProductCollectionAction:
+        public: true
+        arguments:
+            $handler: '@App\Products\QueryHandler\GetProductCollectionHandler'
+
+    App\Products\QueryHandler\GetRatedProductsHandler:
+        arguments:
+            $repository: '@App\Products\Repository\DBALProductRepository'    
+            
+    App\Products\Controller\DeleteProductAction:
+        public: true
+        arguments:
+            $handler: '@App\Products\CommandHandler\DeleteProductHandler'
+
+    App\Products\CommandHandler\DeleteProductHandler:
+        arguments:
+            $repository: '@App\Products\Repository\DBALProductRepository'
+
+    App\Products\Controller\GetRatedProductsAction:
+        public: true
+        arguments:
+            $handler: '@App\Products\QueryHandler\GetRatedProductsHandler'
+
+    App\Products\QueryHandler\GetProductHandler:
+        arguments:
+            $repository: '@App\Products\Repository\DBALProductRepository'
+      
+    App\Products\Controller\GetProductAction:
+        public: true
+        arguments:
+            $handler: '@App\Products\QueryHandler\GetProductHandler'  
+            
+    App\Products\CommandHandler\PostProductHandler:
+        arguments:
+            $repository: '@App\Products\Repository\DBALProductRepository'
+      
+    App\Products\Controller\PostProductAction:
+        public: true
+        arguments:
+            $handler: '@App\Products\CommandHandler\PostProductHandler'
+
+    App\Auth\Controller\RegistrationAction:
+        public: true
+        arguments:
+            $handler: '@App\Auth\CommandHandler\RegistrationHandler'   
+
+    App\Auth\CommandHandler\RegistrationHandler:
+
+    App\Auth\Controller\PasswordChangeAction:
+        public: true
+        arguments:
+            $handler: '@App\Auth\CommandHandler\PasswordChangeHandler'   
+
+    App\Auth\CommandHandler\RegistrationHandler:
+
+    App\Categories\Controller\GetCategoryAction:
+        public: true
+        arguments:
+            $handler: '@App\Categories\QueryHandler\GetCategoryHandler'      
+            
+    App\Categories\QueryHandler\GetCategoryHandler:
+        arguments:
+            $repository: '@App\Categories\Repository\DBALCategoryRepository'         
+            
+    App\Categories\Controller\GetCollectionCategoryAction:
+        public: true
+        arguments:
+            $handler: '@App\Categories\QueryHandler\GetCollectionCategoryHandler'      
+            
+    App\Categories\QueryHandler\GetCollectionCategoryHandler:
+        arguments:
+            $repository: '@App\Categories\Repository\DBALCategoryRepository'      
+            
+    App\Categories\Controller\PostCategoryAction:
+        public: true
+        arguments:
+            $handler: '@App\Categories\QueryHandler\PostCategoryHandler'      
+            
+    App\Categories\QueryHandler\PostCategoryHandler:
+        arguments:
+            $repository: '@App\Categories\Repository\DBALCategoryRepository'       
+            
+    App\Categories\Repository\DBALCategoryRepository:
+        arguments:
+            $connection: '@doctrine.dbal.default_connection'
+
+    App\Auth\Controller\LoginVerificationAction:
+
+    App\Rating\Controller\PostRatingAction:
+        public: true
+        arguments:
+            $handler: '@App\Rating\CommandHandler\PostRatingHandler'    
+            
+    App\Rating\CommandHandler\PostRatingHandler:
+        arguments:
+            $repository: '@App\Rating\Repository\DBALRatingRepository'    
+
+    App\Rating\Repository\DBALRatingRepository:
+        arguments:
+            $connection: '@doctrine.dbal.default_connection'    
+            
+    App\Stock\Controller\UpdateStockAction:
+        public: true
+        arguments:
+            $handler: '@App\Stock\CommandHandler\UpdateStockHandler'    
+            
+    App\Stock\CommandHandler\UpdateStockHandler:
+        arguments:
+            $repository: '@App\Stock\Repository\DBALStockRepository'       
+            
+    App\Stock\Controller\SetStockAction:
+        public: true
+        arguments:
+            $handler: '@App\Stock\CommandHandler\SetStockHandler'    
+            
+    App\Stock\CommandHandler\SetStockHandler:
+        arguments:
+            $repository: '@App\Stock\Repository\DBALStockRepository'    
+
+    App\Stock\Repository\DBALStockRepository:
+        arguments:
+            $connection: '@doctrine.dbal.default_connection'    
+            
+    App\Orders\Controller\PostOrderAction:
+        public: true
+        arguments:
+            $handler: '@App\Orders\CommandHandler\PostOrderHandler'    
+            
+    App\Orders\CommandHandler\PostOrderHandler:
+        arguments:
+            $repository: '@App\Orders\Repository\DBALOrderRepository'       
+
+    App\Orders\Controller\GetOrderCollectionAction:
+        public: true
+        arguments:
+            $handler: '@App\Orders\QueryHandler\GetOrderCollectionHandler'    
+            
+    App\Orders\QueryHandler\GetOrderCollectionHandler:
+        arguments:
+            $repository: '@App\Orders\Repository\DBALOrderRepository'       
+
+    App\Orders\Repository\DBALOrderRepository:
+        arguments:
+            $connection: '@doctrine.dbal.default_connection'
