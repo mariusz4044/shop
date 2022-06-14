@@ -1,6 +1,4 @@
-# Projekt grupowy PWSIP semestr V 2021/2022
-Jarosław Murawski, Michał Runo, Mariusz Wojsz
-
+# Projekt Sklepu Internetowego.
 ## Opis projektu
 Prosty sklep internetowy
 
